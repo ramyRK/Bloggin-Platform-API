@@ -11,7 +11,7 @@ class post (models.Model):
 
     title= models.CharField(max_length=255)
     content=models.TextField()
-    category=models.CharField(choices=category_choices)
+    category=models.CharField(choices=category_choices,max_length=255)
     tags=models.JSONField(default=list)
 
     def __str__(self):
