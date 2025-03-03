@@ -13,3 +13,6 @@ class post (models.Model):
     content=models.TextField()
     category=models.CharField(choices=category_choices)
     tags=models.JSONField(default=list)
+
+    def __str__(self):
+        return self.title
