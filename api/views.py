@@ -10,6 +10,15 @@ from .models import Post
 def posts(request):
     if request.method=='GET':
         posts=Post.objects.all()
+        category=request.query_params.get('category')
+        search=request.query_params.get('title')
+        tag=request.query_params.get('tags')
+        if category:
+            posts=posts.filter(category=category)
+        if search :
+            posts=posts.filter(title__contains=search)   
+        if tag :
+            posts=posts.filter(tags__contains=tag)
         serialzed_items=postSerializer(posts,many=True)
         return Response(serialzed_items.data)
     if request.method=='POST':
