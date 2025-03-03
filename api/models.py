@@ -1,7 +1,8 @@
 from django.db import models
+from django.utils.timezone import now
 
 # Create your models here.
-class post (models.Model):
+class Post (models.Model):
     category_choices=[
         ('Technology','Technology'),
         ('Sports','Sports'),

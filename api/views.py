@@ -1,15 +1,16 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .serializers import postSerializer
-from .models import post
+from .models import Post
 
 @api_view(['GET','POST'])
 def posts(request):
     if request.method=='GET':
-        posts=post.objects.all()
-        serialzed_items=postSerializer(posts,many=true)
+        posts=Post.objects.all()
+        serialzed_items=postSerializer(posts,many=True)
         return Response(serialzed_items.data)
     if request.method=='POST':
         serialzed_items=postSerializer(data=request.data)
@@ -17,17 +18,20 @@ def posts(request):
         serialzed_items.save()
         return Response(serialzed_items.validated_data,status.HTTP_201_CREATED)
 
-api_view(['GET','DELETE','PUT'])
-def post(request,pk):
-    post = get_object_or_404(post,pk=pk)
-    if request.method=='GET':
-        serialized=postSerializer(post)
-        return Response(serialized.data)
-    if request.method=='PUT':
-        serialized=postSerializer(post, data=request.data)
-        serialized.is_valid(raise_exception=True)
-        serialized.save()
-        return Response(serialized.validated_data,status.HTTP_201_CREATED)
-    if request.method=='DELETE':
+@api_view(['GET', 'PUT', 'DELETE'])
+def post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.method == 'GET':
+        serializer = postSerializer(post)
+        return Response(serializer.data)
+
+    if request.method == 'PUT':
+        serializer = postSerializer(post, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    if request.method == 'DELETE':
         post.delete()
-        return Response({'message':'POST DELETED'},status.HTTP_204_NO_CONTENT)
+        return Response({'message': 'POST DELETED'}, status=status.HTTP_204_NO_CONTENT)
